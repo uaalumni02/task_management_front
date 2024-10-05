@@ -16,6 +16,7 @@ import "../static/login.css";
 const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [InvalidLogin, setInvalidLogin] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -32,6 +33,9 @@ const Login = () => {
       .then((res) => res.json())
       .then((response) => {
         console.log(response);
+        if(response.success == false) {
+          setInvalidLogin("**Invalid Credentials");
+        }
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -68,8 +72,8 @@ const Login = () => {
             Login
           </button>
         </form>
+        <h3>{InvalidLogin}</h3>
       </div>
-
       <div className="options-container">
         <div className="card">
           <a href="#" className="forgot-password-link">
