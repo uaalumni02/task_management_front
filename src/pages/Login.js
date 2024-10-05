@@ -2,43 +2,33 @@ import React, { useState } from "react";
 import "../static/login.css";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    email: "",
-  });
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log("Form Data:", formData);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    fetch("http://localhost:3000/api/user/login", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userName,
+        password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.error("Error:", error));
   };
 
   return (
     <div className="login-page">
       <div className="login-container">
-        <form onSubmit={handleSubmit} className="login-form">
-          <h2>Login</h2>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        <form className="login-form">
+          <h2>Log Into Task Manager</h2>
 
           <div className="form-group">
             <label htmlFor="username">Username</label>
@@ -46,8 +36,7 @@ const Login = () => {
               type="text"
               id="username"
               name="username"
-              value={formData.username}
-              onChange={handleChange}
+              onChange={(e) => setUserName(e.target.value)}
               required
             />
           </div>
@@ -58,13 +47,12 @@ const Login = () => {
               type="password"
               id="password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
-          <button type="submit" className="login-btn">
+          <button type="submit" className="login-btn" onClick={handleSubmit}>
             Login
           </button>
         </form>
