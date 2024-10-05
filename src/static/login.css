@@ -8,7 +8,10 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(to right, #e0eafc, #cfdef3); /* Soft gradient background */
+  background: url('/public/task.jpg') no-repeat center center fixed;
+  background-size: 100%; /* Zooms out the image by setting a larger background size */
+  background-attachment: fixed;
+  background-position: center center;
 }
 
 
