@@ -75,7 +75,7 @@ const Login = () => {
       </div>
       <div className="options-container">
         <div className="card">
-          <a href="#" className="forgot-password-link">
+          <a href="/Request_Token" className="forgot-password-link">
             Forgot Password?
           </a>
         </div>
