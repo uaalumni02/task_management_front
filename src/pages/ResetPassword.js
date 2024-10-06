@@ -1,26 +1,17 @@
 import React, { useState } from "react";
 import "../static/login.css";
 
-//----example of how to access cookies for routes that are secured
-
-// fetch("http://localhost:3000/api/protected-route", {
-//   method: "GET",
-//   credentials: "include", // Ensures cookies are sent with the request
-// })
-//   .then((res) => res.json())
-//   .then((response) => {
-//     console.log(response);
-//   })
-//   .catch((error) => console.error("Error:", error));
-
-const Login = () => {
+const ResetPassword = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [InvalidLogin, setInvalidLogin] = useState("");
+  const [invalidReset, setInvalidReset] = useState("");
 
   const handleSubmit = (event) => {
+    const url = window.location.pathname;
+    const reset_token  = url.substring(url.lastIndexOf("/") + 1);
+    console.log(reset_token)
     event.preventDefault();
-    fetch("http://localhost:3000/api/user/login", {
+    fetch("http://localhost:3000/api/updatePassword/" + reset_token, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -28,13 +19,14 @@ const Login = () => {
       body: JSON.stringify({
         userName,
         password,
+     
       }),
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response)
+        console.log(response);
         if(response.success == false) {
-          setInvalidLogin("**Invalid Credentials");
+          setInvalidReset("**Please Enter Valid User Name and Password");
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -44,7 +36,7 @@ const Login = () => {
     <div className="login-page">
       <div className="login-container">
         <form className="login-form">
-          <h2>Log Into Task Manager</h2>
+          <h2>Reset Password</h2>
 
           <div className="form-group">
             <label htmlFor="username">Username</label>
@@ -58,7 +50,7 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">New Password</label>
             <input
               type="password"
               id="password"
@@ -69,26 +61,20 @@ const Login = () => {
           </div>
 
           <button type="submit" className="login-btn" onClick={handleSubmit}>
-            Login
+            Reset
           </button>
+          
+          <div className="form-group">
+            <a href="/" className="return-to-login-link">
+              Return to Login
+            </a>
+          </div>
         </form>
-        <h3>{InvalidLogin}</h3>
+        <h3>{invalidReset}</h3>
       </div>
-      <div className="options-container">
-        <div className="card">
-          <a href="/Request_Token" className="forgot-password-link">
-            Forgot Password?
-          </a>
-        </div>
-        <div className="card">
-          <p>New to the site?</p>
-          <a href="/register" className="signup-link">
-            Create an Account!
-          </a>
-        </div>
-      </div>
+      <div className="options-container"></div>
     </div>
   );
 };
 
-export default Login;
+export default ResetPassword;

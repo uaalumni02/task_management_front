@@ -22,9 +22,7 @@ const RequestToken = () => {
         console.log(response);
         if(response.success == false) {
           setInvalidReset("**Enter Valid Email");
-        } else {
-          setValidReset("**Reset Link Sent to Email")
-        }
+        } 
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -50,7 +48,6 @@ const RequestToken = () => {
           </button>
         </form>
         <h3>{invalidReset}</h3>
-        <h3>{validReset}</h3>
       </div>
 
       <div className="options-container">
