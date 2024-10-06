@@ -32,7 +32,6 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
         if(response.success == false) {
           setInvalidLogin("**Invalid Credentials");
         }

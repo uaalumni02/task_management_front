@@ -5,6 +5,7 @@ const Register = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [invalidRegister, setInvalidRegister] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -22,6 +23,9 @@ const Register = () => {
       .then((res) => res.json())
       .then((response) => {
         console.log(response);
+        if (response.success == false) {
+          setInvalidRegister("**Invalid Registration");
+        }
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -68,6 +72,7 @@ const Register = () => {
             Register
           </button>
         </form>
+        <h3>{invalidRegister}</h3>
       </div>
 
       <div className="options-container">
