@@ -1,16 +1,27 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "../static/login.css";
 
 const ResetPassword = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [invalidReset, setInvalidReset] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = (event) => {
+    event.preventDefault();
+
+    // Check if passwords match before submitting
+    if (password !== confirmPassword) {
+      setInvalidReset("**Passwords do not match");
+      return;
+    }
+
     const url = window.location.pathname;
     const reset_token = url.substring(url.lastIndexOf("/") + 1);
     console.log(reset_token);
-    event.preventDefault();
+
     fetch("http://localhost:3000/api/updatePassword/" + reset_token, {
       method: "post",
       headers: {
@@ -24,8 +35,11 @@ const ResetPassword = () => {
       .then((res) => res.json())
       .then((response) => {
         console.log(response);
-        if (response.success == false) {
+        if (response.success === false) {
           setInvalidReset("**Please Enter Valid User Name and Password");
+        } else if (response.success === true) {
+          // If response is successful, redirect to login page
+          navigate("/");
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -55,6 +69,17 @@ const ResetPassword = () => {
               id="password"
               name="password"
               onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm New Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
           </div>
