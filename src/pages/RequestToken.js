@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
 import "../static/login.css";
 
 const RequestToken = () => {
   const [email, setEmail] = useState("");
   const [invalidReset, setInvalidReset] = useState("");
-  const [validReset, setValidReset] = useState("");
+  const [validReset, setValidReset] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -20,12 +22,21 @@ const RequestToken = () => {
       .then((res) => res.json())
       .then((response) => {
         console.log(response);
-        if(response.success == false) {
+        if (response.success === false) {
           setInvalidReset("**Enter Valid Email");
-        } 
+        } else {
+          setValidReset(true);
+        }
       })
       .catch((error) => console.error("Error:", error));
   };
+
+  // useEffect to handle redirection when validReset is true
+  useEffect(() => {
+    if (validReset) {
+      navigate("/confirmation"); // Redirect to the confirmation page
+    }
+  }, [validReset, navigate]); // Trigger redirection when validReset changes
 
   return (
     <div className="login-page">

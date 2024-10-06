@@ -8,8 +8,8 @@ const ResetPassword = () => {
 
   const handleSubmit = (event) => {
     const url = window.location.pathname;
-    const reset_token  = url.substring(url.lastIndexOf("/") + 1);
-    console.log(reset_token)
+    const reset_token = url.substring(url.lastIndexOf("/") + 1);
+    console.log(reset_token);
     event.preventDefault();
     fetch("http://localhost:3000/api/updatePassword/" + reset_token, {
       method: "post",
@@ -19,13 +19,12 @@ const ResetPassword = () => {
       body: JSON.stringify({
         userName,
         password,
-     
       }),
     })
       .then((res) => res.json())
       .then((response) => {
         console.log(response);
-        if(response.success == false) {
+        if (response.success == false) {
           setInvalidReset("**Please Enter Valid User Name and Password");
         }
       })
@@ -63,7 +62,7 @@ const ResetPassword = () => {
           <button type="submit" className="login-btn" onClick={handleSubmit}>
             Reset
           </button>
-          
+
           <div className="form-group">
             <a href="/" className="return-to-login-link">
               Return to Login

@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RequestToken from "./pages/RequestToken";
 import ResetPassword from "./pages/ResetPassword";
+import EmailConfirmation from "./pages/EmailConfirmation";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/Request_Token" element={<RequestToken />} />
           <Route exact path="/reset/:id" element={<ResetPassword />} />
+          <Route exact path="/confirmation" element={<EmailConfirmation />} />
         </Routes>
       </BrowserRouter>
     </div>
