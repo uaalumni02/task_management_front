@@ -81,6 +81,12 @@ const Register = () => {
             Forgot Password?
           </a>
         </div>
+        {/* New "Return to Login" card */}
+        <div className="card">
+          <a href="/" className="return-to-login-link">
+            Return to Login
+          </a>
+        </div>
       </div>
     </div>
   );

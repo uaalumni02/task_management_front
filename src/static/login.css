@@ -107,6 +107,15 @@ body {
   text-decoration: underline;
 }
 
+.return-to-login-link,
+.signup-link {
+  display: block;
+  font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
 /* New user section */
 .signup-link {
   font-size: 1rem;
