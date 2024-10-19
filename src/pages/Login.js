@@ -19,6 +19,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [InvalidLogin, setInvalidLogin] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userId, setUserId] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -34,11 +35,12 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
+        console.log(response.user._id);
         if (response.success == false) {
           setInvalidLogin("**Invalid Credentials");
         } else {
           setLoggedIn(true);
+          setUserId(response.user._id)
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -46,7 +48,7 @@ const Login = () => {
 
   return (
     <div className="login-page">
-       {loggedIn ? <Navigate to={`/dashboard`} /> : ""}
+       {loggedIn ? <Navigate to={`/dashboard/${userId}`} /> : ""}
       <div className="login-container">
         <form className="login-form">
           <h2>Log Into Task Manager</h2>

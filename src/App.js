@@ -19,7 +19,7 @@ function App() {
           <Route exact path="/Request_Token" element={<RequestToken />} />
           <Route exact path="/reset/:id" element={<ResetPassword />} />
           <Route exact path="/confirmation" element={<EmailConfirmation />} />
-          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route exact path="/dashboard/:id" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </div>
