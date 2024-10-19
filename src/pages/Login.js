@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
 import "../static/login.css";
 
 //----example of how to access cookies for routes that are secured
@@ -17,6 +18,7 @@ const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [InvalidLogin, setInvalidLogin] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -35,6 +37,8 @@ const Login = () => {
         console.log(response);
         if (response.success == false) {
           setInvalidLogin("**Invalid Credentials");
+        } else {
+          setLoggedIn(true);
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -42,6 +46,7 @@ const Login = () => {
 
   return (
     <div className="login-page">
+       {loggedIn ? <Navigate to={`/dashboard`} /> : ""}
       <div className="login-container">
         <form className="login-form">
           <h2>Log Into Task Manager</h2>
