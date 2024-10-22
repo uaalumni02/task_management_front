@@ -37,10 +37,12 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [newTask, setNewTask] = useState({
     task: "",
-    priority: "Medium",
+    priority: "",
     dueDate: "",
-    status: "Pending",
+    status: "",
   });
+  const [priorityOptions, setPriorityOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
   const [taskPriorityData, setTaskPriorityData] = useState({
     labels: [],
     datasets: [
@@ -75,18 +77,6 @@ const Dashboard = () => {
       })
       .catch((error) => console.error("Error:", error));
   };
-
-  // const fetchPriorityData = () => {
-  //   fetch("http://localhost:3000/api/priority", {
-  //     method: "GET",
-  //     credentials: "include",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((response) => {
-
-  //     })
-  //     .catch((error) => console.error("Error:", error));
-  // };
 
   const updateChartData = (fetchedTasks) => {
     const highPriority = fetchedTasks.filter(
@@ -138,11 +128,8 @@ const Dashboard = () => {
   }, []);
 
   // Function to format the due date
-  const formatDate = (timestamp) => {
-    if (typeof timestamp !== "number") {
-      return "Invalid date";
-    }
-    const date = new Date(timestamp * 1000);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -150,30 +137,52 @@ const Dashboard = () => {
     });
   };
 
+  // Function to fetch priorities and statuses and update the modal options
   const handlePriorityAndStatus = () => {
-    // Fetch priority data after adding the task
+    // Fetch priority data
     fetch("http://localhost:3000/api/priority", {
       method: "GET",
       credentials: "include",
     })
       .then((res) => res.json())
       .then((priorityResponse) => {
-        // Handle the fetched priority data (if needed)
-        console.log("Priority data:", priorityResponse);
+        setPriorityOptions(priorityResponse.data); // Save fetched priority options
       })
       .catch((error) => console.error("Error fetching priority data:", error));
 
-    // Fetch status data after adding the task
+    // Fetch status data
     fetch("http://localhost:3000/api/status", {
       method: "GET",
       credentials: "include",
     })
       .then((res) => res.json())
       .then((statusResponse) => {
-        // Handle the fetched status data (if needed)
-        console.log("Status data:", statusResponse);
+        setStatusOptions(statusResponse.data); // Save fetched status options
       })
       .catch((error) => console.error("Error fetching status data:", error));
+  };
+
+  const handleAddTask = () => {
+    // Send a POST request to save the new task to the backend
+    fetch("http://localhost:3000/api/task", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(newTask), // Convert new task data to JSON
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.success) {
+          // Refresh tasks from the server
+          fetchUserData();
+          setShowModal(false); // Close modal after task is added
+        } else {
+          console.error("Error adding task:", response.message);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
   };
 
   return (
@@ -210,7 +219,7 @@ const Dashboard = () => {
                 variant="primary"
                 onClick={() => {
                   setShowModal(true); // This opens the modal
-                  handlePriorityAndStatus(); 
+                  handlePriorityAndStatus(); // Fetch and populate modal options
                 }}
               >
                 Add Task
@@ -251,7 +260,7 @@ const Dashboard = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Task</Form.Label>
               <Form.Control
                 type="text"
@@ -261,7 +270,7 @@ const Dashboard = () => {
                 }
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Priority</Form.Label>
               <Form.Select
                 value={newTask.priority}
@@ -269,12 +278,15 @@ const Dashboard = () => {
                   setNewTask({ ...newTask, priority: e.target.value })
                 }
               >
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
+                <option value="">Select Priority</option>
+                {priorityOptions.map((priority) => (
+                  <option key={priority._id} value={priority._id}>
+                    {priority.priority}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Due Date</Form.Label>
               <Form.Control
                 type="date"
@@ -284,7 +296,7 @@ const Dashboard = () => {
                 }
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="mb-3">
               <Form.Label>Status</Form.Label>
               <Form.Select
                 value={newTask.status}
@@ -292,9 +304,12 @@ const Dashboard = () => {
                   setNewTask({ ...newTask, status: e.target.value })
                 }
               >
-                <option value="Pending">Pending</option>
-                <option value="Completed">Completed</option>
-                <option value="Overdue">Overdue</option>
+                <option value="">Select Status</option>
+                {statusOptions.map((status) => (
+                  <option key={status._id} value={status._id}>
+                    {status.status}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
           </Form>
@@ -303,7 +318,9 @@ const Dashboard = () => {
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close
           </Button>
-          <Button variant="primary">Add Task</Button>
+          <Button variant="primary" onClick={handleAddTask}>
+            Add Task
+          </Button>
         </Modal.Footer>
       </Modal>
     </Container>
