@@ -24,10 +24,25 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  const [task, setTask] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState("");
-  const [status, setStatus] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [taskPriorityData, setTaskPriorityData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: "Number of Tasks",
+        data: [],
+        backgroundColor: [],
+        borderColor: [],
+        borderWidth: 1,
+      },
+    ],
+  });
+  const [taskStatusData, setTaskStatusData] = useState({
+    labels: ["Completed", "Pending", "Overdue"],
+    datasets: [
+      { data: [], backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"] },
+    ],
+  });
 
   const fetchUserData = () => {
     const url = window.location.pathname;
@@ -38,81 +53,61 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response.data[0].task);
-        console.log(response.data[0].dueDate);
-        console.log(response.data[0].priority.priority);
-        console.log(response.data[0].status.status);
+        const fetchedTasks = response.data;
+        setTasks(fetchedTasks);
+        updateChartData(fetchedTasks);
       })
       .catch((error) => console.error("Error:", error));
+  };
+
+  const updateChartData = (fetchedTasks) => {
+    const highPriority = fetchedTasks.filter(
+      (task) => task.priority.priority === "High"
+    ).length;
+    const mediumPriority = fetchedTasks.filter(
+      (task) => task.priority.priority === "Medium"
+    ).length;
+    const lowPriority = fetchedTasks.filter(
+      (task) => task.priority.priority === "Low"
+    ).length;
+
+    const completed = fetchedTasks.filter(
+      (task) => task.status.status === "Completed"
+    ).length;
+    const pending = fetchedTasks.filter(
+      (task) => task.status.status === "Pending"
+    ).length;
+    const overdue = fetchedTasks.filter(
+      (task) => task.status.status === "Overdue"
+    ).length;
+
+    setTaskPriorityData({
+      labels: ["High Priority", "Medium Priority", "Low Priority"],
+      datasets: [
+        {
+          label: "Number of Tasks",
+          data: [highPriority, mediumPriority, lowPriority],
+          backgroundColor: ["#FF6384", "#FFCE56", "#4BC0C0"],
+          borderColor: ["#FF6384", "#FFCE56", "#4BC0C0"],
+          borderWidth: 1,
+        },
+      ],
+    });
+
+    setTaskStatusData({
+      labels: ["Completed", "Pending", "Overdue"],
+      datasets: [
+        {
+          data: [completed, pending, overdue],
+          backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"],
+        },
+      ],
+    });
   };
 
   useEffect(() => {
     fetchUserData();
   }, []);
-
-  // Fake Data for Task Management
-  const taskPriorityData = {
-    labels: ["High Priority", "Medium Priority", "Low Priority"],
-    datasets: [
-      {
-        label: "Number of Tasks",
-        data: [10, 25, 15], // Example: 10 high priority, 25 medium, 15 low
-        backgroundColor: ["#FF6384", "#FFCE56", "#4BC0C0"],
-        borderColor: ["#FF6384", "#FFCE56", "#4BC0C0"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const taskStatusData = {
-    labels: ["Completed", "Pending", "Overdue"],
-    datasets: [
-      {
-        data: [40, 30, 10], // Example: 40 tasks completed, 30 pending, 10 overdue
-        backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"],
-        hoverBackgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"],
-      },
-    ],
-  };
-
-  // Fake Task List with due dates and priorities
-  const tasks = [
-    {
-      id: 1,
-      title: "Prepare Presentation",
-      dueDate: "2024-10-10",
-      priority: "High",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      title: "Submit Report",
-      dueDate: "2024-10-08",
-      priority: "Medium",
-      status: "Overdue",
-    },
-    {
-      id: 3,
-      title: "Fix Bug in App",
-      dueDate: "2024-10-12",
-      priority: "Low",
-      status: "Pending",
-    },
-    {
-      id: 4,
-      title: "Update Website",
-      dueDate: "2024-10-06",
-      priority: "High",
-      status: "Completed",
-    },
-    {
-      id: 5,
-      title: "Email Client",
-      dueDate: "2024-10-09",
-      priority: "Medium",
-      status: "Pending",
-    },
-  ];
 
   return (
     <Container fluid className="mt-4">
@@ -157,13 +152,13 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {tasks.map((task) => (
-                    <tr key={task.id}>
-                      <td>{task.id}</td>
-                      <td>{task.title}</td>
+                  {tasks.map((task, index) => (
+                    <tr key={task._id}>
+                      <td>{index + 1}</td>
+                      <td>{task.task}</td>
                       <td>{task.dueDate}</td>
-                      <td>{task.priority}</td>
-                      <td>{task.status}</td>
+                      <td>{task.priority.priority}</td>
+                      <td>{task.status.status}</td>
                     </tr>
                   ))}
                 </tbody>
