@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Table } from "react-bootstrap";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
@@ -24,6 +24,24 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const fetchUserData = () => {
+    const url = window.location.pathname;
+    const id = url.substring(url.lastIndexOf("/") + 1);
+    fetch("http://localhost:3000/api/task_by_user/" + id, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  });
+
   // Fake Data for Task Management
   const taskPriorityData = {
     labels: ["High Priority", "Medium Priority", "Low Priority"],

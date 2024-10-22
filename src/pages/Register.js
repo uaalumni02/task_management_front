@@ -11,6 +11,7 @@ const Register = () => {
     event.preventDefault();
     fetch("http://localhost:3000/api/user", {
       method: "post",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },

@@ -25,6 +25,7 @@ const Login = () => {
     event.preventDefault();
     fetch("http://localhost:3000/api/user/login", {
       method: "post",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
