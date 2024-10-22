@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Table } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Button,
+  Modal,
+  Form,
+} from "react-bootstrap";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -25,6 +34,13 @@ ChartJS.register(
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [newTask, setNewTask] = useState({
+    task: "",
+    priority: "Medium",
+    dueDate: "",
+    status: "Pending",
+  });
   const [taskPriorityData, setTaskPriorityData] = useState({
     labels: [],
     datasets: [
@@ -53,13 +69,24 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response.data[0].dueDate); // Check the dueDate
         const fetchedTasks = response.data;
         setTasks(fetchedTasks);
         updateChartData(fetchedTasks);
       })
       .catch((error) => console.error("Error:", error));
   };
+
+  // const fetchPriorityData = () => {
+  //   fetch("http://localhost:3000/api/priority", {
+  //     method: "GET",
+  //     credentials: "include",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((response) => {
+
+  //     })
+  //     .catch((error) => console.error("Error:", error));
+  // };
 
   const updateChartData = (fetchedTasks) => {
     const highPriority = fetchedTasks.filter(
@@ -112,16 +139,41 @@ const Dashboard = () => {
 
   // Function to format the due date
   const formatDate = (timestamp) => {
-    // Ensure the timestamp is a valid number before conversion
     if (typeof timestamp !== "number") {
       return "Invalid date";
     }
-    const date = new Date(timestamp * 1000); // Convert to milliseconds
+    const date = new Date(timestamp * 1000);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
+  };
+
+  const handlePriorityAndStatus = () => {
+    // Fetch priority data after adding the task
+    fetch("http://localhost:3000/api/priority", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((priorityResponse) => {
+        // Handle the fetched priority data (if needed)
+        console.log("Priority data:", priorityResponse);
+      })
+      .catch((error) => console.error("Error fetching priority data:", error));
+
+    // Fetch status data after adding the task
+    fetch("http://localhost:3000/api/status", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((statusResponse) => {
+        // Handle the fetched status data (if needed)
+        console.log("Status data:", statusResponse);
+      })
+      .catch((error) => console.error("Error fetching status data:", error));
   };
 
   return (
@@ -152,8 +204,17 @@ const Dashboard = () => {
       <Row className="mt-4">
         <Col md={12}>
           <Card>
-            <Card.Header>
+            <Card.Header className="d-flex justify-content-between">
               <h4>Upcoming Deadlines</h4>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  setShowModal(true); // This opens the modal
+                  handlePriorityAndStatus(); 
+                }}
+              >
+                Add Task
+              </Button>
             </Card.Header>
             <Card.Body>
               <Table responsive>
@@ -171,8 +232,7 @@ const Dashboard = () => {
                     <tr key={task._id}>
                       <td>{index + 1}</td>
                       <td>{task.task}</td>
-                      <td>{formatDate(task.dueDate)}</td>{" "}
-                      {/* Format the due date */}
+                      <td>{formatDate(task.dueDate)}</td>
                       <td>{task.priority.priority}</td>
                       <td>{task.status.status}</td>
                     </tr>
@@ -183,6 +243,69 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Modal for adding new task */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New Task</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Task</Form.Label>
+              <Form.Control
+                type="text"
+                value={newTask.task}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, task: e.target.value })
+                }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Priority</Form.Label>
+              <Form.Select
+                value={newTask.priority}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, priority: e.target.value })
+                }
+              >
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Due Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={newTask.dueDate}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, dueDate: e.target.value })
+                }
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={newTask.status}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, status: e.target.value })
+                }
+              >
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Overdue">Overdue</option>
+              </Form.Select>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary">Add Task</Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
