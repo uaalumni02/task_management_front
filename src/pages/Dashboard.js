@@ -53,6 +53,7 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
+        console.log(response.data[0].dueDate); // Check the dueDate
         const fetchedTasks = response.data;
         setTasks(fetchedTasks);
         updateChartData(fetchedTasks);
@@ -109,6 +110,20 @@ const Dashboard = () => {
     fetchUserData();
   }, []);
 
+  // Function to format the due date
+  const formatDate = (timestamp) => {
+    // Ensure the timestamp is a valid number before conversion
+    if (typeof timestamp !== "number") {
+      return "Invalid date";
+    }
+    const date = new Date(timestamp * 1000); // Convert to milliseconds
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <Container fluid className="mt-4">
       <Row>
@@ -156,7 +171,8 @@ const Dashboard = () => {
                     <tr key={task._id}>
                       <td>{index + 1}</td>
                       <td>{task.task}</td>
-                      <td>{task.dueDate}</td>
+                      <td>{formatDate(task.dueDate)}</td>{" "}
+                      {/* Format the due date */}
                       <td>{task.priority.priority}</td>
                       <td>{task.status.status}</td>
                     </tr>
