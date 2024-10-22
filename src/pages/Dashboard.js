@@ -24,6 +24,11 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const [task, setTask] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
+
   const fetchUserData = () => {
     const url = window.location.pathname;
     const id = url.substring(url.lastIndexOf("/") + 1);
@@ -33,14 +38,17 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
+        console.log(response.data[0].task);
+        console.log(response.data[0].dueDate);
+        console.log(response.data[0].priority.priority);
+        console.log(response.data[0].status.status);
       })
       .catch((error) => console.error("Error:", error));
   };
 
   useEffect(() => {
     fetchUserData();
-  });
+  }, []);
 
   // Fake Data for Task Management
   const taskPriorityData = {
