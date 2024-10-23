@@ -225,6 +225,24 @@ const Dashboard = () => {
       .catch((error) => console.error("Error:", error));
   };
 
+  const handleDeleteTask = (taskId) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      fetch(`http://localhost:3000/api/task/${taskId}`, {
+        method: "DELETE",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.success) {
+            fetchUserData(); // Refresh the task list after deletion
+          } else {
+            console.error("Error deleting task:", response.message);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  };
+
   return (
     <Container fluid className="mt-4">
       <Row>
@@ -274,6 +292,7 @@ const Dashboard = () => {
                     <th>Due Date</th>
                     <th>Priority</th>
                     <th>Status</th>
+                    <th>Actions</th> {/* New column for actions */}
                   </tr>
                 </thead>
                 <tbody>
@@ -284,6 +303,14 @@ const Dashboard = () => {
                       <td>{formatDate(task.dueDate)}</td>
                       <td>{task.priority.priority}</td>
                       <td>{task.status.status}</td>
+                      <td>
+                        <Button
+                          variant="danger"
+                          onClick={() => handleDeleteTask(task._id)} // Handle delete action
+                        >
+                          Delete
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -293,24 +320,26 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* Modal for adding new task */}
+      {/* Modal for adding a new task */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Add New Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="mb-3">
+            <Form.Group controlId="formTask">
               <Form.Label>Task</Form.Label>
               <Form.Control
                 type="text"
+                placeholder="Enter task name"
                 value={newTask.task}
                 onChange={(e) =>
                   setNewTask({ ...newTask, task: e.target.value })
                 }
               />
             </Form.Group>
-            <Form.Group className="mb-3">
+
+            <Form.Group controlId="formPriority">
               <Form.Label>Priority</Form.Label>
               <Form.Select
                 value={newTask.priority}
@@ -319,14 +348,15 @@ const Dashboard = () => {
                 }
               >
                 <option value="">Select Priority</option>
-                {priorityOptions.map((priority) => (
-                  <option key={priority._id} value={priority._id}>
-                    {priority.priority}
+                {priorityOptions.map((option) => (
+                  <option key={option._id} value={option._id}>
+                    {option.priority}
                   </option>
                 ))}
               </Form.Select>
             </Form.Group>
-            <Form.Group className="mb-3">
+
+            <Form.Group controlId="formDueDate">
               <Form.Label>Due Date</Form.Label>
               <Form.Control
                 type="date"
@@ -336,7 +366,8 @@ const Dashboard = () => {
                 }
               />
             </Form.Group>
-            <Form.Group className="mb-3">
+
+            <Form.Group controlId="formStatus">
               <Form.Label>Status</Form.Label>
               <Form.Select
                 value={newTask.status}
@@ -345,9 +376,9 @@ const Dashboard = () => {
                 }
               >
                 <option value="">Select Status</option>
-                {statusOptions.map((status) => (
-                  <option key={status._id} value={status._id}>
-                    {status.status}
+                {statusOptions.map((option) => (
+                  <option key={option._id} value={option._id}>
+                    {option.status}
                   </option>
                 ))}
               </Form.Select>
