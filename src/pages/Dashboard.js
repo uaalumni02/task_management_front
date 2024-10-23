@@ -72,7 +72,6 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((response) => {
         const fetchedTasks = response.data;
-        console.log(fetchedTasks);
         setTasks(fetchedTasks);
         updateChartData(fetchedTasks);
       })
@@ -128,7 +127,6 @@ const Dashboard = () => {
     fetchUserData();
   }, []);
 
-  // Function to format the due date
   const formatDate = (timestamp) => {
     if (typeof timestamp !== "number") {
       return "Invalid date";
@@ -141,8 +139,6 @@ const Dashboard = () => {
     });
   };
 
-
-  // Function to fetch priorities and statuses and update the modal options
   const handlePriorityAndStatus = () => {
     // Fetch priority data
     fetch("http://localhost:3000/api/priority", {
@@ -168,6 +164,38 @@ const Dashboard = () => {
   };
 
   const handleAddTask = () => {
+    const url = window.location.pathname;
+    const userId = url.substring(url.lastIndexOf("/") + 1); // Get user ID from the URL
+
+    // Check if dueDate is valid
+    if (!newTask.dueDate) {
+      console.error("Due date is required.");
+      return; // Exit if no due date is set
+    }
+
+    // Convert dueDate to a timestamp
+    const dueDate = new Date(newTask.dueDate);
+    const dueDateTimestamp = dueDate.getTime() / 1000; // Convert to seconds
+
+    // Check if the dueDate is valid after conversion
+    if (isNaN(dueDateTimestamp)) {
+      console.error("Invalid due date:", newTask.dueDate);
+      return; // Exit if the date conversion failed
+    }
+
+    // Format the due date to MM/DD/YYYY
+    const formattedDueDate = `${
+      dueDate.getMonth() + 1
+    }/${dueDate.getDate()}/${dueDate.getFullYear()}`;
+
+    const taskData = {
+      task: newTask.task,
+      priority: newTask.priority,
+      dueDate: formattedDueDate, // Use the formatted date here
+      status: newTask.status,
+      userName: userId, // Add user ID to the task data
+    };
+
     // Send a POST request to save the new task to the backend
     fetch("http://localhost:3000/api/task", {
       method: "POST",
@@ -175,7 +203,7 @@ const Dashboard = () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(newTask), // Convert new task data to JSON
+      body: JSON.stringify(taskData), // Convert task data to JSON
     })
       .then((res) => res.json())
       .then((response) => {
@@ -183,6 +211,13 @@ const Dashboard = () => {
           // Refresh tasks from the server
           fetchUserData();
           setShowModal(false); // Close modal after task is added
+          // Reset the newTask state to clear the modal fields
+          setNewTask({
+            task: "",
+            priority: "",
+            dueDate: "",
+            status: "",
+          });
         } else {
           console.error("Error adding task:", response.message);
         }
