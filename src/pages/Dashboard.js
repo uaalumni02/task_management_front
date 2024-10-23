@@ -43,6 +43,7 @@ const Dashboard = () => {
   });
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const [taskPriorityData, setTaskPriorityData] = useState({
     labels: [],
     datasets: [
@@ -139,7 +140,7 @@ const Dashboard = () => {
     });
   };
 
-  const handlePriorityAndStatus = () => {
+  const handleTaskDesription = () => {
     // Fetch priority data
     fetch("http://localhost:3000/api/priority", {
       method: "GET",
@@ -159,6 +160,17 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((statusResponse) => {
         setStatusOptions(statusResponse.data); // Save fetched status options
+      })
+      .catch((error) => console.error("Error fetching status data:", error));
+
+    //fetch category data
+    fetch("http://localhost:3000/api/category", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((categoryResponse) => {
+        setCategoryOptions(categoryResponse.data);
       })
       .catch((error) => console.error("Error fetching status data:", error));
   };
@@ -277,7 +289,7 @@ const Dashboard = () => {
                 variant="primary"
                 onClick={() => {
                   setShowModal(true); // This opens the modal
-                  handlePriorityAndStatus(); // Fetch and populate modal options
+                  handleTaskDesription(); // Fetch and populate modal options
                 }}
               >
                 Add Task
