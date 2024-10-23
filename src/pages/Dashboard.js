@@ -72,6 +72,7 @@ const Dashboard = () => {
       .then((res) => res.json())
       .then((response) => {
         const fetchedTasks = response.data;
+        console.log(fetchedTasks);
         setTasks(fetchedTasks);
         updateChartData(fetchedTasks);
       })
@@ -128,14 +129,18 @@ const Dashboard = () => {
   }, []);
 
   // Function to format the due date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
+  const formatDate = (timestamp) => {
+    if (typeof timestamp !== "number") {
+      return "Invalid date";
+    }
+    const date = new Date(timestamp * 1000); // Convert to milliseconds
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
   };
+
 
   // Function to fetch priorities and statuses and update the modal options
   const handlePriorityAndStatus = () => {
