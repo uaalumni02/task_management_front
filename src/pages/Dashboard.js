@@ -40,6 +40,7 @@ const Dashboard = () => {
     priority: "",
     dueDate: "",
     status: "",
+    category: "", // Added category field
   });
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
@@ -126,6 +127,39 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchUserData();
+
+    // Fetch priority options on component mount
+    fetch("http://localhost:3000/api/priority", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((priorityResponse) => {
+        setPriorityOptions(priorityResponse.data); // Save fetched priority options
+      })
+      .catch((error) => console.error("Error fetching priority data:", error));
+
+    // Fetch status options on component mount
+    fetch("http://localhost:3000/api/status", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((statusResponse) => {
+        setStatusOptions(statusResponse.data); // Save fetched status options
+      })
+      .catch((error) => console.error("Error fetching status data:", error));
+
+    // Fetch category options on component mount
+    fetch("http://localhost:3000/api/category", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((categoryResponse) => {
+        setCategoryOptions(categoryResponse.data); // Save fetched category options
+      })
+      .catch((error) => console.error("Error fetching category data:", error));
   }, []);
 
   const formatDate = (timestamp) => {
@@ -138,41 +172,6 @@ const Dashboard = () => {
       month: "long",
       day: "numeric",
     });
-  };
-
-  const handleTaskDesription = () => {
-    // Fetch priority data
-    fetch("http://localhost:3000/api/priority", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((priorityResponse) => {
-        setPriorityOptions(priorityResponse.data); // Save fetched priority options
-      })
-      .catch((error) => console.error("Error fetching priority data:", error));
-
-    // Fetch status data
-    fetch("http://localhost:3000/api/status", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((statusResponse) => {
-        setStatusOptions(statusResponse.data); // Save fetched status options
-      })
-      .catch((error) => console.error("Error fetching status data:", error));
-
-    //fetch category data
-    fetch("http://localhost:3000/api/category", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((categoryResponse) => {
-        setCategoryOptions(categoryResponse.data);
-      })
-      .catch((error) => console.error("Error fetching status data:", error));
   };
 
   const handleAddTask = () => {
@@ -205,6 +204,7 @@ const Dashboard = () => {
       priority: newTask.priority,
       dueDate: formattedDueDate, // Use the formatted date here
       status: newTask.status,
+      category: newTask.category, // Include category in task data
       userName: userId, // Add user ID to the task data
     };
 
@@ -229,6 +229,7 @@ const Dashboard = () => {
             priority: "",
             dueDate: "",
             status: "",
+            category: "", // Reset category
           });
         } else {
           console.error("Error adding task:", response.message);
@@ -281,44 +282,34 @@ const Dashboard = () => {
       </Row>
 
       <Row className="mt-4">
-        <Col md={12}>
+        <Col>
           <Card>
-            <Card.Header className="d-flex justify-content-between">
-              <h4>Upcoming Deadlines</h4>
-              <Button
-                variant="primary"
-                onClick={() => {
-                  setShowModal(true); // This opens the modal
-                  handleTaskDesription(); // Fetch and populate modal options
-                }}
-              >
-                Add Task
-              </Button>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <h4>Task List</h4>
+              <Button onClick={() => setShowModal(true)}>Add Task</Button>
             </Card.Header>
             <Card.Body>
-              <Table responsive>
+              <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>#</th>
                     <th>Task</th>
-                    <th>Due Date</th>
                     <th>Priority</th>
+                    <th>Due Date</th>
                     <th>Status</th>
-                    <th>Actions</th> {/* New column for actions */}
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tasks.map((task, index) => (
+                  {tasks.map((task) => (
                     <tr key={task._id}>
-                      <td>{index + 1}</td>
                       <td>{task.task}</td>
-                      <td>{formatDate(task.dueDate)}</td>
                       <td>{task.priority.priority}</td>
+                      <td>{formatDate(task.dueDate)}</td>
                       <td>{task.status.status}</td>
                       <td>
                         <Button
                           variant="danger"
-                          onClick={() => handleDeleteTask(task._id)} // Handle delete action
+                          onClick={() => handleDeleteTask(task._id)}
                         >
                           Delete
                         </Button>
@@ -391,6 +382,23 @@ const Dashboard = () => {
                 {statusOptions.map((option) => (
                   <option key={option._id} value={option._id}>
                     {option.status}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group controlId="formCategory">
+              <Form.Label>Category</Form.Label>
+              <Form.Select
+                value={newTask.category}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, category: e.target.value })
+                }
+              >
+                <option value="">Select Category</option>
+                {categoryOptions.map((option) => (
+                  <option key={option._id} value={option._id}>
+                    {option.categoryName}
                   </option>
                 ))}
               </Form.Select>
