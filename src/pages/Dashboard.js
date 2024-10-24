@@ -455,6 +455,7 @@ const Dashboard = () => {
                       <td>{formatDate(task.dueDate)}</td>
                       <td>{task.status.status}</td>
                       <td>{task.category.categoryName}</td>
+
                       <td>
                         <Button
                           variant="danger"
@@ -462,6 +463,9 @@ const Dashboard = () => {
                         >
                           Delete
                         </Button>
+                        <span style={{ marginLeft: "10px" }}>
+                          <Button variant="info">Status</Button>
+                        </span>
                       </td>
                     </tr>
                   ))}
