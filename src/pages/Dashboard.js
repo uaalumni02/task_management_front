@@ -37,6 +37,7 @@ ChartJS.register(
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
   const [newTask, setNewTask] = useState({
     task: "",
     priority: "",
@@ -339,10 +340,6 @@ const Dashboard = () => {
     navigate("/"); // Redirect to root route
   };
 
-  // useEffect(() => {
-  //   // Fetch data here...
-  // }, []);
-
   return (
     <Container>
       <Row className="my-4">
@@ -464,7 +461,12 @@ const Dashboard = () => {
                           Delete
                         </Button>
                         <span style={{ marginLeft: "10px" }}>
-                          <Button variant="info">Status</Button>
+                          <Button
+                            onClick={() => setShowStatusModal(true)}
+                            variant="info"
+                          >
+                            Status
+                          </Button>
                         </span>
                       </td>
                     </tr>
@@ -475,6 +477,43 @@ const Dashboard = () => {
           </Card>
         </Col>
       </Row>
+
+      {/* Add Status Modal */}
+      <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update Status</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={newTask.status}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, status: e.target.value })
+                }
+              >
+                <option value="">Update Status</option>
+                {statusOptions.map((status) => (
+                  <option key={status._id} value={status._id}>
+                    {status.status}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleAddTask}>
+            Update Status
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* ------------------------------------------------------------------------------------------ */}
 
       {/* Add Task Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
