@@ -269,7 +269,6 @@ const Dashboard = () => {
 
     // Create a new Date object, assuming dueDateInput is a Unix timestamp in seconds
     const taskDueDate = new Date(dueDateInput * 1000);
-    console.log("Task due date:", taskDueDate);
 
     // Format dueDateInput into MM/DD/YYYY format
     const formattedDueDateInput = [
@@ -277,8 +276,6 @@ const Dashboard = () => {
       String(taskDueDate.getUTCDate()).padStart(2, "0"), // Day (1-31)
       taskDueDate.getUTCFullYear(), // Full Year
     ].join("/");
-
-    console.log("Formatted Due Date Input:", formattedDueDateInput);
 
     // Create a Date object for filter.dueDate
     let filterDueDate;
@@ -298,8 +295,6 @@ const Dashboard = () => {
           filterDueDate.getUTCFullYear(), // Full Year
         ].join("/")
       : "";
-
-    console.log("Formatted Filter due date:", formattedFilterDueDate);
 
     const matchesDate = formattedFilterDueDate
       ? formattedDueDateInput === formattedFilterDueDate // Compare formatted task due date to filter's due date
