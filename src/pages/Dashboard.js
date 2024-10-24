@@ -327,6 +327,7 @@ const Dashboard = () => {
           <Card>
             <Card.Header>
               <h3>Dashboard</h3>
+              <Button >Logout</Button>
             </Card.Header>
             <Card.Body>
               <Row>
