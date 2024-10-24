@@ -275,8 +275,7 @@ const Dashboard = () => {
     const taskDueDateFormatted = taskDueDate.toLocaleDateString("en-US"); // Format the date
 
     const matchesDueDate =
-      filter.dueDate === "" ||
-      taskDueDateFormatted === filter.dueDate; // Compare formatted date with filter
+      filter.dueDate === "" || taskDueDateFormatted === filter.dueDate; // Compare formatted date with filter
 
     const matchesStatus =
       filter.status === "" || task.status.status === filter.status;
@@ -395,7 +394,9 @@ const Dashboard = () => {
               <Form.Control
                 type="text"
                 value={newTask.task}
-                onChange={(e) => setNewTask({ ...newTask, task: e.target.value })}
+                onChange={(e) =>
+                  setNewTask({ ...newTask, task: e.target.value })
+                }
                 placeholder="Enter task description"
               />
             </Form.Group>
@@ -473,6 +474,7 @@ const Dashboard = () => {
       </Modal>
 
       {/* Update Status Modal */}
+
       <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Update Task Status</Modal.Title>
@@ -498,6 +500,14 @@ const Dashboard = () => {
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowStatusModal(false)}>
             Close
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => handleUpdateStatus(selectedTaskId)}
+          >
+            {" "}
+            {/* Adjust this if you want to explicitly save changes */}
+            Update Status
           </Button>
         </Modal.Footer>
       </Modal>
