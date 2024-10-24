@@ -1,3 +1,132 @@
+/* General page styling */
+/* General page styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: 100%; /* Zooms out the image by setting a larger background size */
+  background-attachment: fixed;
+  background-position: center center;
+}
+
+
+/* Page layout */
+.login-page {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+/* Login container */
+.login-container {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 350px;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Options container */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.forgot-password-link,
+.signup-link {
+  display: block;
+  font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
+.forgot-password-link:hover,
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+.return-to-login-link,
+.signup-link {
+  display: block;
+  font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
+  margin-top: 1rem;
+}
+
+/* New user section */
+.signup-link {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
 body {
   background: linear-gradient(135deg, #F0F0F0 30%, #003366 100%);
   color: #003366; 
