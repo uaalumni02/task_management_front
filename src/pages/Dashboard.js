@@ -285,7 +285,7 @@ const Dashboard = () => {
         <Col>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
-              <h4>Task List</h4>
+              <h4>Tasks</h4>
               <Button onClick={() => setShowModal(true)}>Add Task</Button>
             </Card.Header>
             <Card.Body>
@@ -296,6 +296,7 @@ const Dashboard = () => {
                     <th>Priority</th>
                     <th>Due Date</th>
                     <th>Status</th>
+                    <th>Category</th> {/* New Category column */}
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -306,6 +307,7 @@ const Dashboard = () => {
                       <td>{task.priority.priority}</td>
                       <td>{formatDate(task.dueDate)}</td>
                       <td>{task.status.status}</td>
+                      <td>{task.category ? task.category.categoryName : "N/A"}</td> {/* Safely accessing category */}
                       <td>
                         <Button
                           variant="danger"
@@ -323,7 +325,7 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-      {/* Modal for adding a new task */}
+      {/* Add Task Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Add New Task</Modal.Title>
@@ -334,31 +336,30 @@ const Dashboard = () => {
               <Form.Label>Task</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter task name"
+                placeholder="Enter task"
                 value={newTask.task}
                 onChange={(e) =>
                   setNewTask({ ...newTask, task: e.target.value })
                 }
               />
             </Form.Group>
-
             <Form.Group controlId="formPriority">
               <Form.Label>Priority</Form.Label>
-              <Form.Select
+              <Form.Control
+                as="select"
                 value={newTask.priority}
                 onChange={(e) =>
                   setNewTask({ ...newTask, priority: e.target.value })
                 }
               >
                 <option value="">Select Priority</option>
-                {priorityOptions.map((option) => (
-                  <option key={option._id} value={option._id}>
-                    {option.priority}
+                {priorityOptions.map((priority) => (
+                  <option key={priority._id} value={priority._id}>
+                    {priority.priority}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Control>
             </Form.Group>
-
             <Form.Group controlId="formDueDate">
               <Form.Label>Due Date</Form.Label>
               <Form.Control
@@ -369,39 +370,39 @@ const Dashboard = () => {
                 }
               />
             </Form.Group>
-
             <Form.Group controlId="formStatus">
               <Form.Label>Status</Form.Label>
-              <Form.Select
+              <Form.Control
+                as="select"
                 value={newTask.status}
                 onChange={(e) =>
                   setNewTask({ ...newTask, status: e.target.value })
                 }
               >
                 <option value="">Select Status</option>
-                {statusOptions.map((option) => (
-                  <option key={option._id} value={option._id}>
-                    {option.status}
+                {statusOptions.map((status) => (
+                  <option key={status._id} value={status._id}>
+                    {status.status}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Control>
             </Form.Group>
-
             <Form.Group controlId="formCategory">
               <Form.Label>Category</Form.Label>
-              <Form.Select
+              <Form.Control
+                as="select"
                 value={newTask.category}
                 onChange={(e) =>
                   setNewTask({ ...newTask, category: e.target.value })
                 }
               >
                 <option value="">Select Category</option>
-                {categoryOptions.map((option) => (
-                  <option key={option._id} value={option._id}>
-                    {option.categoryName}
+                {categoryOptions.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.categoryName}
                   </option>
                 ))}
-              </Form.Select>
+              </Form.Control>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -410,7 +411,7 @@ const Dashboard = () => {
             Close
           </Button>
           <Button variant="primary" onClick={handleAddTask}>
-            Add Task
+            Save Task
           </Button>
         </Modal.Footer>
       </Modal>
