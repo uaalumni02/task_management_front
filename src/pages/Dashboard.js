@@ -264,13 +264,51 @@ const Dashboard = () => {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    const matchesDate = filter.dueDate
-      ? new Date(task.dueDate).toLocaleDateString() ===
-        new Date(filter.dueDate).toLocaleDateString()
+    // Get the due date from the task
+    const dueDateInput = task.dueDate;
+
+    // Create a new Date object, assuming dueDateInput is a Unix timestamp in seconds
+    const taskDueDate = new Date(dueDateInput * 1000);
+    console.log("Task due date:", taskDueDate);
+
+    // Format dueDateInput into MM/DD/YYYY format
+    const formattedDueDateInput = [
+      String(taskDueDate.getUTCMonth() + 1).padStart(2, "0"), // Month (0-11)
+      String(taskDueDate.getUTCDate()).padStart(2, "0"), // Day (1-31)
+      taskDueDate.getUTCFullYear(), // Full Year
+    ].join("/");
+
+    console.log("Formatted Due Date Input:", formattedDueDateInput);
+
+    // Create a Date object for filter.dueDate
+    let filterDueDate;
+
+    if (typeof filter.dueDate === "number") {
+      // If it's a Unix timestamp in seconds, convert it to milliseconds
+      filterDueDate = new Date(filter.dueDate * 1000);
+    } else {
+      filterDueDate = new Date(filter.dueDate);
+    }
+
+    // Format filter.dueDate to MM/DD/YYYY format if it is provided
+    const formattedFilterDueDate = filter.dueDate
+      ? [
+          String(filterDueDate.getUTCMonth() + 1).padStart(2, "0"), // Month (0-11)
+          String(filterDueDate.getUTCDate()).padStart(2, "0"), // Day (1-31)
+          filterDueDate.getUTCFullYear(), // Full Year
+        ].join("/")
+      : "";
+
+    console.log("Formatted Filter due date:", formattedFilterDueDate);
+
+    const matchesDate = formattedFilterDueDate
+      ? formattedDueDateInput === formattedFilterDueDate // Compare formatted task due date to filter's due date
       : true;
+
     const matchesStatus = filter.status
       ? task.status._id === filter.status
       : true;
+
     const matchesCategory = filter.category
       ? task.category._id === filter.category
       : true;
