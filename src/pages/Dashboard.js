@@ -64,6 +64,13 @@ const Dashboard = () => {
     ],
   });
 
+  // Filter state
+  const [filter, setFilter] = useState({
+    dueDate: "",
+    status: "",
+    category: "",
+  });
+
   const fetchUserData = () => {
     const url = window.location.pathname;
     const id = url.substring(url.lastIndexOf("/") + 1);
@@ -256,58 +263,139 @@ const Dashboard = () => {
     }
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    const matchesDate = filter.dueDate
+      ? new Date(task.dueDate).toLocaleDateString() ===
+        new Date(filter.dueDate).toLocaleDateString()
+      : true;
+    const matchesStatus = filter.status
+      ? task.status._id === filter.status
+      : true;
+    const matchesCategory = filter.category
+      ? task.category._id === filter.category
+      : true;
+
+    return matchesDate && matchesStatus && matchesCategory;
+  });
+
+  // Clear all filters
+  const clearFilters = () => {
+    setFilter({
+      dueDate: "",
+      status: "",
+      category: "",
+    });
+  };
+
   return (
-    <Container fluid className="mt-4">
-      <Row>
-        <Col md={8}>
+    <Container>
+      <Row className="my-4">
+        <Col>
           <Card>
             <Card.Header>
-              <h4>Task Priority Overview</h4>
+              <h3>Dashboard</h3>
             </Card.Header>
             <Card.Body>
-              <Bar data={taskPriorityData} options={{ responsive: true }} />
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card>
-            <Card.Header>
-              <h4>Task Completion Status</h4>
-            </Card.Header>
-            <Card.Body>
-              <Doughnut data={taskStatusData} options={{ responsive: true }} />
+              <Row>
+                <Col md={6}>
+                  <Bar data={taskPriorityData} />
+                </Col>
+                <Col md={6}>
+                  <Doughnut data={taskStatusData} />
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-
-      <Row className="mt-4">
+      <Row className="my-4">
         <Col>
           <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <h4>Tasks</h4>
+            <Card.Header>
+              <h3>Task List</h3>
               <Button onClick={() => setShowModal(true)}>Add Task</Button>
             </Card.Header>
             <Card.Body>
-              <Table striped bordered hover>
+              {/* Filters */}
+              <Card className="mb-3">
+                <Card.Header>Filters</Card.Header>
+                <Card.Body>
+                  <Form>
+                    <Row>
+                      <Col md={4}>
+                        <Form.Group>
+                          <Form.Label>Due Date</Form.Label>
+                          <Form.Control
+                            type="date"
+                            value={filter.dueDate}
+                            onChange={(e) =>
+                              setFilter({ ...filter, dueDate: e.target.value })
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={4}>
+                        <Form.Group>
+                          <Form.Label>Status</Form.Label>
+                          <Form.Select
+                            value={filter.status}
+                            onChange={(e) =>
+                              setFilter({ ...filter, status: e.target.value })
+                            }
+                          >
+                            <option value="">Select Status</option>
+                            {statusOptions.map((status) => (
+                              <option key={status._id} value={status._id}>
+                                {status.status}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                      <Col md={4}>
+                        <Form.Group>
+                          <Form.Label>Category</Form.Label>
+                          <Form.Select
+                            value={filter.category}
+                            onChange={(e) =>
+                              setFilter({ ...filter, category: e.target.value })
+                            }
+                          >
+                            <option value="">Select Category</option>
+                            {categoryOptions.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.categoryName}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Button variant="outline-secondary" onClick={clearFilters}>
+                      Clear Filters
+                    </Button>
+                  </Form>
+                </Card.Body>
+              </Card>
+              <Table striped bordered hover className="mt-3">
                 <thead>
                   <tr>
                     <th>Task</th>
                     <th>Priority</th>
                     <th>Due Date</th>
                     <th>Status</th>
-                    <th>Category</th> {/* New Category column */}
+                    <th>Category</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tasks.map((task) => (
+                  {filteredTasks.map((task) => (
                     <tr key={task._id}>
                       <td>{task.task}</td>
                       <td>{task.priority.priority}</td>
                       <td>{formatDate(task.dueDate)}</td>
                       <td>{task.status.status}</td>
-                      <td>{task.category ? task.category.categoryName : "N/A"}</td> {/* Safely accessing category */}
+                      <td>{task.category.categoryName}</td>
                       <td>
                         <Button
                           variant="danger"
@@ -332,21 +420,20 @@ const Dashboard = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="formTask">
+            <Form.Group>
               <Form.Label>Task</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter task"
                 value={newTask.task}
                 onChange={(e) =>
                   setNewTask({ ...newTask, task: e.target.value })
                 }
+                placeholder="Enter task description"
               />
             </Form.Group>
-            <Form.Group controlId="formPriority">
+            <Form.Group>
               <Form.Label>Priority</Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 value={newTask.priority}
                 onChange={(e) =>
                   setNewTask({ ...newTask, priority: e.target.value })
@@ -358,9 +445,9 @@ const Dashboard = () => {
                     {priority.priority}
                   </option>
                 ))}
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
-            <Form.Group controlId="formDueDate">
+            <Form.Group>
               <Form.Label>Due Date</Form.Label>
               <Form.Control
                 type="date"
@@ -370,10 +457,9 @@ const Dashboard = () => {
                 }
               />
             </Form.Group>
-            <Form.Group controlId="formStatus">
+            <Form.Group>
               <Form.Label>Status</Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 value={newTask.status}
                 onChange={(e) =>
                   setNewTask({ ...newTask, status: e.target.value })
@@ -385,12 +471,11 @@ const Dashboard = () => {
                     {status.status}
                   </option>
                 ))}
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
-            <Form.Group controlId="formCategory">
+            <Form.Group>
               <Form.Label>Category</Form.Label>
-              <Form.Control
-                as="select"
+              <Form.Select
                 value={newTask.category}
                 onChange={(e) =>
                   setNewTask({ ...newTask, category: e.target.value })
@@ -402,7 +487,7 @@ const Dashboard = () => {
                     {category.categoryName}
                   </option>
                 ))}
-              </Form.Control>
+              </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -411,7 +496,7 @@ const Dashboard = () => {
             Close
           </Button>
           <Button variant="primary" onClick={handleAddTask}>
-            Save Task
+            Add Task
           </Button>
         </Modal.Footer>
       </Modal>
