@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   Container,
   Row,
@@ -320,6 +322,27 @@ const Dashboard = () => {
     });
   };
 
+  const navigate = useNavigate();
+
+  // Function to clear cookies
+  const clearCookies = () => {
+    document.cookie.split(";").forEach((cookie) => {
+      document.cookie = cookie
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    clearCookies();
+    navigate("/"); // Redirect to root route
+  };
+
+  // useEffect(() => {
+  //   // Fetch data here...
+  // }, []);
+
   return (
     <Container>
       <Row className="my-4">
@@ -327,7 +350,9 @@ const Dashboard = () => {
           <Card>
             <Card.Header>
               <h3>Dashboard</h3>
-              <Button >Logout</Button>
+              <Button variant="primary" size="md" onClick={handleLogout}>
+                Logout
+              </Button>
             </Card.Header>
             <Card.Body>
               <Row>
