@@ -461,7 +461,7 @@ const Dashboard = () => {
                 <option value="">Select category</option>
                 {categoryOptions.map((category) => (
                   <option key={category._id} value={category._id}>
-                    {category.category}
+                    {category.categoryName}
                   </option>
                 ))}
               </Form.Control>
