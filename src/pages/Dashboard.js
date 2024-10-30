@@ -87,6 +87,8 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
+        console.log(response.data[0].dueDate)
+        setDateToEdit(response.data[0].dueDate)
         const fetchedTasks = response.data;
         setTasks(fetchedTasks);
         updateChartData(fetchedTasks);
@@ -294,40 +296,43 @@ const Dashboard = () => {
     return matchesDueDate && matchesStatus && matchesCategory;
   });
 
-  const formattedDate = new Date(dateToEdit);
-  const dueDate = `${(formattedDate.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${formattedDate
-    .getDate()
-    .toString()
-    .padStart(2, "0")}-${formattedDate.getFullYear().toString().slice(-2)}`;
+ 
+const formattedDate = new Date(dateToEdit * 1000); // Convert to milliseconds
+console.log("Formatted date:", formattedDate);
 
-  const handleUpdateStatus = (taskId) => {
-    fetch(`http://localhost:3000/api/task/${taskId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        task: taskToEdit,
-        userName: userToEdit,
-        dueDate: dueDate,
-        status: selectedStatusId, // Include the selected status ID here
-      }),
+const dueDate = `${(formattedDate.getMonth() + 1)
+  .toString()
+  .padStart(2, "0")}-${formattedDate
+  .getDate()
+  .toString()
+  .padStart(2, "0")}-${formattedDate.getFullYear().toString().slice(-2)}`;
+
+const handleUpdateStatus = (taskId) => {
+  fetch(`http://localhost:3000/api/task/${taskId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      task: taskToEdit,
+      userName: userToEdit,
+      dueDate: dueDate, // Use the formatted due date
+      status: selectedStatusId,
+    }),
+  })
+    .then((res) => res.json())
+    .then((response) => {
+      if (response.success) {
+        fetchUserData(); // Refresh the task list after updating
+        setShowStatusModal(false); // Close the status modal
+      } else {
+        console.error("Error updating task status:", response.message);
+      }
     })
-      .then((res) => res.json())
-      .then((response) => {
-        console.log(response);
-        if (response.success) {
-          fetchUserData(); // Refresh the task list after updating
-          setShowStatusModal(false); // Close the status modal
-        } else {
-          console.error("Error updating task status:", response.message);
-        }
-      })
-      .catch((error) => console.error("Error:", error));
-  };
+    .catch((error) => console.error("Error:", error));
+};
+
 
   return (
     <Container>
@@ -367,7 +372,7 @@ const Dashboard = () => {
                       onClick={() => {
                         setTaskToEdit(task.task);
                         setUserToEdit(task.userName._id);
-                        setDateToEdit(task.dueDate);
+                        // setDateToEdit(task.dueDate);
                         setSelectedTaskId(task._id);
                         setShowStatusModal(true);
                       }}
