@@ -35,6 +35,9 @@ ChartJS.register(
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+  const [taskToEdit, setTaskToEdit] = useState("");
+  const [userToEdit, setUserToEdit] = useState("");
+  const [dateToEdit, setDateToEdit] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [newTask, setNewTask] = useState({
@@ -290,22 +293,57 @@ const Dashboard = () => {
     setShowStatusModal(true); // Show the status modal
   };
 
-  const handleUpdateStatus = (newStatus) => {
-    // Send a PATCH request to update the task status
-    const taskUpdateData = {
-      status: newStatus, // Update the task status
-    };
 
+
+
+
+
+
+  const fetchStatusToUpdate = (taskId) => {
+    fetch(`http://localhost:3000/api/task/${taskId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(response.data);
+        setTaskToEdit(response.data.task)
+        setUserToEdit(response.data.userName._id)
+        setDateToEdit(response.data.dueDate)
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
+
+
+
+
+
+  const formattedDate = new Date(dateToEdit);
+  const dueDate = `${(formattedDate.getMonth() + 1).toString().padStart(2, "0")}-${formattedDate.getDate().toString().padStart(2, "0")}-${formattedDate.getFullYear().toString().slice(-2)}`;
+
+
+  const handleUpdateStatus = () => {
     fetch(`http://localhost:3000/api/task/${selectedTaskId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(taskUpdateData), // Convert task update data to JSON
+      body: JSON.stringify({
+        task: taskToEdit,
+        userName: userToEdit,
+        dueDate,
+ 
+      }),
+      
     })
       .then((res) => res.json())
       .then((response) => {
+        console.log(response)
         if (response.success) {
           fetchUserData(); // Refresh the task list after updating
           setShowStatusModal(false); // Close the status modal
@@ -315,6 +353,9 @@ const Dashboard = () => {
       })
       .catch((error) => console.error("Error:", error));
   };
+
+
+
 
   return (
     <Container fluid>
@@ -344,7 +385,10 @@ const Dashboard = () => {
                       <td>
                         {task.status.status}{" "}
                         <Button
-                          onClick={() => handleShowStatusModal(task._id)}
+                          onClick={() => {
+                            fetchStatusToUpdate(task._id);
+                            handleShowStatusModal(task._id);
+                          }}
                           variant="link"
                         >
                           Change Status
@@ -485,7 +529,7 @@ const Dashboard = () => {
               <Form.Label>Select New Status</Form.Label>
               <Form.Control
                 as="select"
-                onChange={(e) => handleUpdateStatus(e.target.value)}
+                // onChange={(e) => handleUpdateStatus(e.target.value)}
               >
                 <option value="">Select status</option>
                 {statusOptions.map((status) => (
