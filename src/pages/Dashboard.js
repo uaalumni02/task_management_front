@@ -48,6 +48,7 @@ const Dashboard = () => {
     category: "", // Added category field
   });
   const [selectedTaskId, setSelectedTaskId] = useState(null); // State to hold selected task ID
+  const [selectedStatusId, setSelectedStatusId] = useState(""); // State to hold selected status ID
   const [priorityOptions, setPriorityOptions] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
@@ -273,61 +274,36 @@ const Dashboard = () => {
     // Get the due date from the task
     const dueDateInput = task.dueDate;
 
-    // Create a new Date object, assuming dueDateInput is a Unix timestamp in seconds
-    const taskDueDate = new Date(dueDateInput * 1000); // Convert to milliseconds
-    const taskDueDateFormatted = taskDueDate.toLocaleDateString("en-US"); // Format the date
+    // Create a date object from the due date
+    const dueDateObject = new Date(dueDateInput);
 
+    // Check if the due date matches the filter
     const matchesDueDate =
-      filter.dueDate === "" || taskDueDateFormatted === filter.dueDate; // Compare formatted date with filter
+      filter.dueDate === "" ||
+      dueDateObject.toDateString() === new Date(filter.dueDate).toDateString();
 
+    // Check if the status matches the filter
     const matchesStatus =
       filter.status === "" || task.status.status === filter.status;
+
+    // Check if the category matches the filter
     const matchesCategory =
       filter.category === "" || task.category.category === filter.category;
 
+    // Return true if the task matches all filters
     return matchesDueDate && matchesStatus && matchesCategory;
   });
 
-  const handleShowStatusModal = (taskId) => {
-    setSelectedTaskId(taskId); // Store the selected task ID
-    setShowStatusModal(true); // Show the status modal
-  };
-
-
-
-
-
-
-
-  const fetchStatusToUpdate = (taskId) => {
-    fetch(`http://localhost:3000/api/task/${taskId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((response) => {
-        console.log(response.data);
-        setTaskToEdit(response.data.task)
-        setUserToEdit(response.data.userName._id)
-        setDateToEdit(response.data.dueDate)
-      })
-      .catch((error) => console.error("Error:", error));
-  };
-
-
-
-
-
-
   const formattedDate = new Date(dateToEdit);
-  const dueDate = `${(formattedDate.getMonth() + 1).toString().padStart(2, "0")}-${formattedDate.getDate().toString().padStart(2, "0")}-${formattedDate.getFullYear().toString().slice(-2)}`;
+  const dueDate = `${(formattedDate.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${formattedDate
+    .getDate()
+    .toString()
+    .padStart(2, "0")}-${formattedDate.getFullYear().toString().slice(-2)}`;
 
-
-  const handleUpdateStatus = () => {
-    fetch(`http://localhost:3000/api/task/${selectedTaskId}`, {
+  const handleUpdateStatus = (taskId) => {
+    fetch(`http://localhost:3000/api/task/${taskId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -336,14 +312,13 @@ const Dashboard = () => {
       body: JSON.stringify({
         task: taskToEdit,
         userName: userToEdit,
-        dueDate,
- 
+        dueDate: dueDate,
+        status: selectedStatusId, // Include the selected status ID here
       }),
-      
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response)
+        console.log(response);
         if (response.success) {
           fetchUserData(); // Refresh the task list after updating
           setShowStatusModal(false); // Close the status modal
@@ -354,75 +329,62 @@ const Dashboard = () => {
       .catch((error) => console.error("Error:", error));
   };
 
-
-
-
   return (
-    <Container fluid>
+    <Container>
       <Row>
-        <Col md={8}>
-          <Card className="mt-3">
-            <Card.Body>
-              <Card.Title>Task Overview</Card.Title>
-              <Button onClick={() => setShowModal(true)}>Add Task</Button>
-              <Table striped bordered hover className="mt-3">
-                <thead>
-                  <tr>
-                    <th>Task</th>
-                    <th>Priority</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Category</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredTasks.map((task) => (
-                    <tr key={task._id}>
-                      <td>{task.task}</td>
-                      <td>{task.priority.priority}</td>
-                      <td>{formatDate(task.dueDate)}</td>
-                      <td>
-                        {task.status.status}{" "}
-                        <Button
-                          onClick={() => {
-                            fetchStatusToUpdate(task._id);
-                            handleShowStatusModal(task._id);
-                          }}
-                          variant="link"
-                        >
-                          Change Status
-                        </Button>
-                      </td>
-                      <td>{task.category.categoryName}</td>
-                      <td>
-                        <Button
-                          variant="danger"
-                          onClick={() => handleDeleteTask(task._id)}
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card className="mt-3">
-            <Card.Body>
-              <Card.Title>Task Priority Distribution</Card.Title>
-              <Bar data={taskPriorityData} />
-            </Card.Body>
-          </Card>
-          <Card className="mt-3">
-            <Card.Body>
-              <Card.Title>Task Status Distribution</Card.Title>
-              <Doughnut data={taskStatusData} />
-            </Card.Body>
-          </Card>
+        <Col>
+          <h1>Dashboard</h1>
+          <Button onClick={() => setShowModal(true)}>Add Task</Button>
+          <h2>Task Statistics</h2>
+          <Row>
+            <Col>
+              <Bar data={taskPriorityData} options={{ responsive: true }} />
+            </Col>
+            <Col>
+              <Doughnut data={taskStatusData} options={{ responsive: true }} />
+            </Col>
+          </Row>
+          <h2>Task List</h2>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Priority</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTasks.map((task) => (
+                <tr key={task._id}>
+                  <td>{task.task}</td>
+                  <td>{task.priority.priority}</td>
+                  <td>{formatDate(task.dueDate)}</td>
+                  <td>{task.status.status}</td>
+                  <td>
+                    <Button
+                      onClick={() => {
+                        setTaskToEdit(task.task);
+                        setUserToEdit(task.userName._id);
+                        setDateToEdit(task.dueDate);
+                        setSelectedTaskId(task._id);
+                        setShowStatusModal(true);
+                      }}
+                    >
+                      Update Status
+                    </Button>{" "}
+                    <Button
+                      variant="danger"
+                      onClick={() => handleDeleteTask(task._id)}
+                    >
+                      Delete
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </Col>
       </Row>
 
@@ -441,7 +403,6 @@ const Dashboard = () => {
                 onChange={(e) =>
                   setNewTask({ ...newTask, task: e.target.value })
                 }
-                placeholder="Enter task description"
               />
             </Form.Group>
             <Form.Group controlId="formPriority">
@@ -500,7 +461,7 @@ const Dashboard = () => {
                 <option value="">Select category</option>
                 {categoryOptions.map((category) => (
                   <option key={category._id} value={category._id}>
-                    {category.categoryName}
+                    {category.category}
                   </option>
                 ))}
               </Form.Control>
@@ -512,24 +473,27 @@ const Dashboard = () => {
             Close
           </Button>
           <Button variant="primary" onClick={handleAddTask}>
-            Add Task
+            Save Task
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Update Status Modal */}
-
       <Modal show={showStatusModal} onHide={() => setShowStatusModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Update Task Status</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="formStatusUpdate">
-              <Form.Label>Select New Status</Form.Label>
+            <Form.Group controlId="formTaskToEdit">
+              <Form.Label>Task</Form.Label>
+              <Form.Control type="text" value={taskToEdit} readOnly />
+            </Form.Group>
+            <Form.Group controlId="formStatus">
+              <Form.Label>Status</Form.Label>
               <Form.Control
                 as="select"
-                // onChange={(e) => handleUpdateStatus(e.target.value)}
+                onChange={(e) => setSelectedStatusId(e.target.value)} // Update selectedStatusId on change
               >
                 <option value="">Select status</option>
                 {statusOptions.map((status) => (
@@ -549,8 +513,6 @@ const Dashboard = () => {
             variant="primary"
             onClick={() => handleUpdateStatus(selectedTaskId)}
           >
-            {" "}
-            {/* Adjust this if you want to explicitly save changes */}
             Update Status
           </Button>
         </Modal.Footer>
