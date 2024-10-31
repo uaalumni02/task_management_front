@@ -351,46 +351,6 @@ const Dashboard = () => {
             </Col>
           </Row>
           <h2>Task List</h2>
-          {/* <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Task</th>
-                <th>Priority</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTasks.map((task) => (
-                <tr key={task._id}>
-                  <td>{task.task}</td>
-                  <td>{task.priority.priority}</td>
-                  <td>{formatDate(task.dueDate)}</td>
-                  <td>{task.status.status}</td>
-                  <td>
-                    <Button
-                      onClick={() => {
-                        setTaskToEdit(task.task);
-                        setUserToEdit(task.userName._id);
-                        // setDateToEdit(task.dueDate);
-                        setSelectedTaskId(task._id);
-                        setShowStatusModal(true);
-                      }}
-                    >
-                      Update Status
-                    </Button>{" "}
-                    <Button
-                      variant="danger"
-                      onClick={() => handleDeleteTask(task._id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table> */}
           <Table striped bordered hover>
             <thead>
               <tr>
