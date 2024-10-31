@@ -87,8 +87,14 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        setDateToEdit(response.data[0].dueDate);
-        const fetchedTasks = response.data;
+        // Check if response.data has at least one task before setting dateToEdit
+        if (response.data && response.data.length > 0) {
+          setDateToEdit(response.data[0].dueDate);
+        } else {
+          setDateToEdit(undefined); // Or set to null or any default value if needed
+        }
+
+        const fetchedTasks = response.data || []; // Ensure fetchedTasks is an empty array if no tasks are found
         setTasks(fetchedTasks);
         updateChartData(fetchedTasks);
       })
@@ -262,8 +268,10 @@ const Dashboard = () => {
         .then((res) => res.json())
         .then((response) => {
           if (response.success) {
-            fetchUserData(); // Refresh the task list after deletion
-            setShowStatusModal(false); // Close the status modal
+            console.log(response);
+            fetchUserData(); // Refresh the task list after confirming and deleting
+          } else {
+            console.error("Error deleting task:", response.message);
           }
         })
         .catch((error) => console.error("Error:", error));
@@ -319,7 +327,6 @@ const Dashboard = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
         if (response.success) {
           fetchUserData(); // Refresh the task list after updating
           setShowStatusModal(false); // Close the status modal
