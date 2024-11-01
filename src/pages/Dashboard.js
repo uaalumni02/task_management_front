@@ -381,6 +381,15 @@ const Dashboard = () => {
     navigate("/"); // Redirect to root route
   };
 
+   // Clear all filters
+   const clearFilters = () => {
+    setFilter({
+      dueDate: "",
+      status: "",
+      category: "",
+    });
+  };
+
   return (
     <Container>
       <Row>
@@ -407,6 +416,23 @@ const Dashboard = () => {
             </Col>
           </Row>
 
+
+
+
+
+
+          <Col md={4}>
+                        <Form.Group>
+                          <Form.Label>Due Date</Form.Label>
+                          <Form.Control
+                            type="date"
+                            value={filter.dueDate}
+                            onChange={(e) =>
+                              setFilter({ ...filter, dueDate: e.target.value })
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
 
 
 
@@ -455,10 +481,32 @@ const Dashboard = () => {
                         </Form.Group>
                       </Col>
 
+<br></br>
+
+                      <Button
+  variant="success"
+  className="clear-filters-button" // This will now apply margin from CSS
+  onClick={clearFilters}
+  style={{
+    padding: "5px 20px",
+    borderRadius: "5px",
+    transition: "background-color 0.3s, transform 0.2s",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.backgroundColor = "#28a745";
+    e.currentTarget.style.transform = "scale(1.05)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.backgroundColor = "";
+    e.currentTarget.style.transform = "scale(1)";
+  }}
+>
+  <i className="fas fa-times-circle" style={{ marginRight: "5px" }}></i>
+  Clear Filters
+</Button>
 
 
-
-
+<br></br><br></br>
 
 
 
