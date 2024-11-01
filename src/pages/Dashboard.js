@@ -282,24 +282,53 @@ const Dashboard = () => {
     // Get the due date from the task
     const dueDateInput = task.dueDate;
 
-    // Create a date object from the due date
-    const dueDateObject = new Date(dueDateInput);
+    // Create a new Date object, assuming dueDateInput is a Unix timestamp in seconds
+    const taskDueDate = new Date(dueDateInput * 1000);
+    console.log("Task due date:", taskDueDate);
 
-    // Check if the due date matches the filter
-    const matchesDueDate =
-      filter.dueDate === "" ||
-      dueDateObject.toDateString() === new Date(filter.dueDate).toDateString();
+    // Format dueDateInput into MM/DD/YYYY format
+    const formattedDueDateInput = [
+      String(taskDueDate.getUTCMonth() + 1).padStart(2, "0"), // Month (0-11)
+      String(taskDueDate.getUTCDate()).padStart(2, "0"), // Day (1-31)
+      taskDueDate.getUTCFullYear(), // Full Year
+    ].join("/");
 
-    // Check if the status matches the filter
-    const matchesStatus =
-      filter.status === "" || task.status.status === filter.status;
+    console.log("Formatted Due Date Input:", formattedDueDateInput);
 
-    // Check if the category matches the filter
-    const matchesCategory =
-      filter.category === "" || task.category.category === filter.category;
+    // Create a Date object for filter.dueDate
+    let filterDueDate;
 
-    // Return true if the task matches all filters
-    return matchesDueDate && matchesStatus && matchesCategory;
+    if (typeof filter.dueDate === "number") {
+      // If it's a Unix timestamp in seconds, convert it to milliseconds
+      filterDueDate = new Date(filter.dueDate * 1000);
+    } else {
+      filterDueDate = new Date(filter.dueDate);
+    }
+
+    // Format filter.dueDate to MM/DD/YYYY format if it is provided
+    const formattedFilterDueDate = filter.dueDate
+      ? [
+          String(filterDueDate.getUTCMonth() + 1).padStart(2, "0"), // Month (0-11)
+          String(filterDueDate.getUTCDate()).padStart(2, "0"), // Day (1-31)
+          filterDueDate.getUTCFullYear(), // Full Year
+        ].join("/")
+      : "";
+
+    console.log("Formatted Filter due date:", formattedFilterDueDate);
+
+    const matchesDate = formattedFilterDueDate
+      ? formattedDueDateInput === formattedFilterDueDate // Compare formatted task due date to filter's due date
+      : true;
+
+    const matchesStatus = filter.status
+      ? task.status._id === filter.status
+      : true;
+
+    const matchesCategory = filter.category
+      ? task.category._id === filter.category
+      : true;
+
+    return matchesDate && matchesStatus && matchesCategory;
   });
 
   const formattedDate = new Date(dateToEdit * 1000); // Convert to milliseconds
@@ -365,9 +394,8 @@ const Dashboard = () => {
             Add Task
           </Button>
           <Button variant="dark" size="md" onClick={handleLogout}>
-  Logout
-</Button>
-
+            Logout
+          </Button>
 
           <h2>Task Statistics</h2>
           <Row>
@@ -378,6 +406,45 @@ const Dashboard = () => {
               <Doughnut data={taskStatusData} options={{ responsive: true }} />
             </Col>
           </Row>
+
+
+
+
+
+
+
+
+          <Col md={4}>
+                        <Form.Group>
+                          <Form.Label>Status</Form.Label>
+                          <Form.Select
+                            value={filter.status}
+                            onChange={(e) =>
+                              setFilter({ ...filter, status: e.target.value })
+                            }
+                          >
+                            <option value="">Select Status</option>
+                            {statusOptions.map((status) => (
+                              <option key={status._id} value={status._id}>
+                                {status.status}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+
+
+
+
+
+
+
+
+
+
+
+
+
           <h2>Task List</h2>
           <Table striped bordered hover>
             <thead>
