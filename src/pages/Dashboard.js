@@ -381,8 +381,8 @@ const Dashboard = () => {
     navigate("/"); // Redirect to root route
   };
 
-   // Clear all filters
-   const clearFilters = () => {
+  // Clear all filters
+  const clearFilters = () => {
     setFilter({
       dueDate: "",
       status: "",
@@ -416,99 +416,88 @@ const Dashboard = () => {
             </Col>
           </Row>
 
-
-
-
-
+          <h1>Filter</h1>
 
           <Col md={4}>
-                        <Form.Group>
-                          <Form.Label>Due Date</Form.Label>
-                          <Form.Control
-                            type="date"
-                            value={filter.dueDate}
-                            onChange={(e) =>
-                              setFilter({ ...filter, dueDate: e.target.value })
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-
-
-
-
-
-
+            <Form.Group>
+              <Form.Label>Due Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={filter.dueDate}
+                onChange={(e) =>
+                  setFilter({ ...filter, dueDate: e.target.value })
+                }
+              />
+            </Form.Group>
+          </Col>
 
           <Col md={4}>
-                        <Form.Group>
-                          <Form.Label>Status</Form.Label>
-                          <Form.Select
-                            value={filter.status}
-                            onChange={(e) =>
-                              setFilter({ ...filter, status: e.target.value })
-                            }
-                          >
-                            <option value="">Select Status</option>
-                            {statusOptions.map((status) => (
-                              <option key={status._id} value={status._id}>
-                                {status.status}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
+            <Form.Group>
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={filter.status}
+                onChange={(e) =>
+                  setFilter({ ...filter, status: e.target.value })
+                }
+              >
+                <option value="">Select Status</option>
+                {statusOptions.map((status) => (
+                  <option key={status._id} value={status._id}>
+                    {status.status}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
 
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Category</Form.Label>
+              <Form.Select
+                value={filter.category}
+                onChange={(e) =>
+                  setFilter({ ...filter, category: e.target.value })
+                }
+              >
+                <option value="">Select Category</option>
+                {categoryOptions.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.categoryName}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Col>
 
+          <br></br>
 
+          <Button
+            variant="success"
+            className="clear-filters-button" // This will now apply margin from CSS
+            onClick={clearFilters}
+            style={{
+              padding: "5px 20px",
+              borderRadius: "5px",
+              transition: "background-color 0.3s, transform 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#28a745";
+              e.currentTarget.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            <i
+              className="fas fa-times-circle"
+              style={{ marginRight: "5px" }}
+            ></i>
+            Clear Filters
+          </Button>
 
-                      <Col md={4}>
-                        <Form.Group>
-                          <Form.Label>Category</Form.Label>
-                          <Form.Select
-                            value={filter.category}
-                            onChange={(e) =>
-                              setFilter({ ...filter, category: e.target.value })
-                            }
-                          >
-                            <option value="">Select Category</option>
-                            {categoryOptions.map((category) => (
-                              <option key={category._id} value={category._id}>
-                                {category.categoryName}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-
-<br></br>
-
-                      <Button
-  variant="success"
-  className="clear-filters-button" // This will now apply margin from CSS
-  onClick={clearFilters}
-  style={{
-    padding: "5px 20px",
-    borderRadius: "5px",
-    transition: "background-color 0.3s, transform 0.2s",
-  }}
-  onMouseEnter={(e) => {
-    e.currentTarget.style.backgroundColor = "#28a745";
-    e.currentTarget.style.transform = "scale(1.05)";
-  }}
-  onMouseLeave={(e) => {
-    e.currentTarget.style.backgroundColor = "";
-    e.currentTarget.style.transform = "scale(1)";
-  }}
->
-  <i className="fas fa-times-circle" style={{ marginRight: "5px" }}></i>
-  Clear Filters
-</Button>
-
-
-<br></br><br></br>
-
-
+          <br></br>
+          <br></br>
 
           <h2>Task List</h2>
           <Table striped bordered hover>
