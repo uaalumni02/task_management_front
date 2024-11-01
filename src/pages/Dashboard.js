@@ -335,12 +335,40 @@ const Dashboard = () => {
       .catch((error) => console.error("Error:", error));
   };
 
+  const navigate = useNavigate();
+
+  // Function to clear cookies
+  const clearCookies = () => {
+    document.cookie.split(";").forEach((cookie) => {
+      document.cookie = cookie
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    clearCookies();
+    navigate("/"); // Redirect to root route
+  };
+
   return (
     <Container>
       <Row>
         <Col>
           <h1>Dashboard</h1>
-          <Button onClick={() => setShowModal(true)}>Add Task</Button>
+
+          <Button
+            onClick={() => setShowModal(true)}
+            style={{ marginRight: "10px" }}
+          >
+            Add Task
+          </Button>
+          <Button variant="dark" size="md" onClick={handleLogout}>
+  Logout
+</Button>
+
+
           <h2>Task Statistics</h2>
           <Row>
             <Col>
