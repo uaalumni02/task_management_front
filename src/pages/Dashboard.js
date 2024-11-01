@@ -436,7 +436,24 @@ const Dashboard = () => {
 
 
 
-
+                      <Col md={4}>
+                        <Form.Group>
+                          <Form.Label>Category</Form.Label>
+                          <Form.Select
+                            value={filter.category}
+                            onChange={(e) =>
+                              setFilter({ ...filter, category: e.target.value })
+                            }
+                          >
+                            <option value="">Select Category</option>
+                            {categoryOptions.map((category) => (
+                              <option key={category._id} value={category._id}>
+                                {category.categoryName}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
 
 
 
