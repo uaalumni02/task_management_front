@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
 import "../static/login.css";
 
 const Register = () => {
@@ -6,6 +7,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [invalidRegister, setInvalidRegister] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userId, setUserId] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -23,9 +26,11 @@ const Register = () => {
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(response);
         if (response.success == false) {
           setInvalidRegister("**Invalid Registration");
+        } else {
+          setLoggedIn(true);
+          setUserId(response.userdata.userId);
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -33,6 +38,7 @@ const Register = () => {
 
   return (
     <div className="login-page">
+      {loggedIn ? <Navigate to={`/dashboard/${userId}`} /> : ""}
       <div className="login-container">
         <form className="login-form">
           <h2>Please Register</h2>
