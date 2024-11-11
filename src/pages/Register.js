@@ -26,11 +26,12 @@ const Register = () => {
     })
       .then((res) => res.json())
       .then((response) => {
+        console.log(response)
         if (response.success == false) {
           setInvalidRegister("**Invalid Registration");
         } else {
           setLoggedIn(true);
-          setUserId(response.userdata.userId);
+          setUserId(response.userData.userId);
         }
       })
       .catch((error) => console.error("Error:", error));
