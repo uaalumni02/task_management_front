@@ -12,7 +12,7 @@ const Register = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetch("http://localhost:3000/api/user", {
+    fetch("https://task-management-api-maa5.onrender.com/api/user", {
       method: "post",
       credentials: "include",
       headers: {

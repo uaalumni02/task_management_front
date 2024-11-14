@@ -10,7 +10,7 @@ const RequestToken = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    fetch("http://localhost:3000/api/reset", {
+    fetch("https://task-management-api-maa5.onrender.com/api/reset", {
       method: "post",
       headers: {
         "Content-Type": "application/json",

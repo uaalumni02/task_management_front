@@ -22,7 +22,7 @@ const ResetPassword = () => {
     const reset_token = url.substring(url.lastIndexOf("/") + 1);
     console.log(reset_token);
 
-    fetch("http://localhost:3000/api/updatePassword/" + reset_token, {
+    fetch("https://task-management-api-maa5.onrender.com/api/updatePassword/" + reset_token, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

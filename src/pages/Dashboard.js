@@ -81,7 +81,7 @@ const Dashboard = () => {
   const fetchUserData = () => {
     const url = window.location.pathname;
     const id = url.substring(url.lastIndexOf("/") + 1);
-    fetch("http://localhost:3000/api/task_by_user/" + id, {
+    fetch("https://task-management-api-maa5.onrender.com/api/task_by_user/" + id, {
       method: "GET",
       credentials: "include",
     })
@@ -150,7 +150,7 @@ const Dashboard = () => {
     fetchUserData();
 
     // Fetch priority options on component mount
-    fetch("http://localhost:3000/api/priority", {
+    fetch("https://task-management-api-maa5.onrender.com/api/priority", {
       method: "GET",
       credentials: "include",
     })
@@ -161,7 +161,7 @@ const Dashboard = () => {
       .catch((error) => console.error("Error fetching priority data:", error));
 
     // Fetch status options on component mount
-    fetch("http://localhost:3000/api/status", {
+    fetch("https://task-management-api-maa5.onrender.com/api/status", {
       method: "GET",
       credentials: "include",
     })
@@ -172,7 +172,7 @@ const Dashboard = () => {
       .catch((error) => console.error("Error fetching status data:", error));
 
     // Fetch category options on component mount
-    fetch("http://localhost:3000/api/category", {
+    fetch("https://task-management-api-maa5.onrender.com/api/category", {
       method: "GET",
       credentials: "include",
     })
@@ -230,7 +230,7 @@ const Dashboard = () => {
     };
 
     // Send a POST request to save the new task to the backend
-    fetch("http://localhost:3000/api/task", {
+    fetch("https://task-management-api-maa5.onrender.com/api/task", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -261,7 +261,7 @@ const Dashboard = () => {
 
   const handleDeleteTask = (taskId) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      fetch(`http://localhost:3000/api/task/${taskId}`, {
+      fetch(`https://task-management-api-maa5.onrender.com/api/task/${taskId}`, {
         method: "DELETE",
         credentials: "include",
       })
@@ -341,7 +341,7 @@ const Dashboard = () => {
     .padStart(2, "0")}-${formattedDate.getFullYear().toString().slice(-2)}`;
 
   const handleUpdateStatus = (taskId) => {
-    fetch(`http://localhost:3000/api/task/${taskId}`, {
+    fetch(`https://task-management-api-maa5.onrender.com/api/task/${taskId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
