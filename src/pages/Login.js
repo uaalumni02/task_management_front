@@ -77,7 +77,7 @@ const Login = () => {
         </div>
         <div className="card">
           <p>New to the site?</p>
-          <a href="/register" className="signup-link">
+          <a href="https://task-management-front-vb8t.onrender.com/register" className="signup-link">
             Create an Account!
           </a>
         </div>
