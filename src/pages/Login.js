@@ -77,10 +77,9 @@ const Login = () => {
         </div>
         <div className="card">
           <p>New to the site?</p>
-          <Link to="/register" className="signup-link"></Link>
-          {/* <a href="/register" className="signup-link"> */}
+          <Link to="/register" className="signup-link">
             Create an Account!
-          {/* </a> */}
+          </Link>
         </div>
       </div>
     </div>
