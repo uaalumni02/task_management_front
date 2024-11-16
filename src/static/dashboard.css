@@ -1,108 +1,92 @@
 /* General Styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
   }
   
-  h1, h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  
-  button {
-    cursor: pointer;
-  }
-  
-  /* Container */
   .container {
     padding: 20px;
   }
   
-  /* Task Statistics */
-  .chart-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-  }
+  /* Responsive Design */
   
-  .chart-container > div {
-    flex: 1;
-  }
-  
-  /* Filters */
-  .filter-group {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-  
-  .filter-group label {
-    font-weight: bold;
-  }
-  
-  .clear-filters-button {
-    margin-top: 10px;
-  }
-  
-  /* Media Queries */
-  
-  /* Small devices (phones, <576px) */
-  @media (max-width: 575.98px) {
-    .chart-container {
-      flex-direction: column;
+  /* Small phones (portrait) */
+  @media (max-width: 320px) {
+    h1, h2 {
+      font-size: 18px;
+      text-align: center;
     }
-  
-    table {
+    .table {
       font-size: 12px;
     }
-  
-    th, td {
-      padding: 5px;
-    }
-  
-    .filter-group {
-      flex-direction: column;
-    }
-  
-    .clear-filters-button {
-      width: 100%;
+    .button {
+      font-size: 14px;
     }
   }
   
-  /* Medium devices (tablets, <768px) */
-  @media (max-width: 767.98px) {
-    .chart-container {
-      flex-direction: column;
+  /* Larger phones (e.g., iPhone, Samsung Galaxy) */
+  @media (max-width: 480px) {
+    h1, h2 {
+      font-size: 20px;
+      text-align: center;
     }
-  
-    .filter-group {
-      flex-direction: column;
+    .table {
+      font-size: 14px;
+    }
+    .button {
+      font-size: 16px;
+    }
+    .chart-container {
+      margin: 0 auto;
+      width: 90%;
     }
   }
   
-  /* Large devices (desktops, <992px) */
-  @media (max-width: 991.98px) {
-    .chart-container {
-      flex-direction: row;
-      flex-wrap: wrap;
+  /* Tablets */
+  @media (max-width: 768px) {
+    h1, h2 {
+      font-size: 22px;
     }
+    .table {
+      font-size: 16px;
+    }
+    .button {
+      font-size: 18px;
+    }
+    .chart-container {
+      margin: 0 auto;
+      width: 80%;
+    }
+  }
   
-    .filter-group {
-      flex-direction: row;
-      flex-wrap: wrap;
+  /* iPads and larger tablets */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    h1, h2 {
+      font-size: 24px;
+    }
+    .table {
+      font-size: 18px;
+    }
+    .button {
+      font-size: 20px;
+    }
+    .chart-container {
+      width: 70%;
+    }
+  }
+  
+  /* Laptops and desktops */
+  @media (min-width: 1025px) {
+    h1, h2 {
+      font-size: 28px;
+    }
+    .table {
+      font-size: 20px;
+    }
+    .button {
+      font-size: 22px;
+    }
+    .chart-container {
+      width: 60%;
     }
   }
   
