@@ -1,0 +1,108 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  /* Container */
+  .container {
+    padding: 20px;
+  }
+  
+  /* Task Statistics */
+  .chart-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .chart-container > div {
+    flex: 1;
+  }
+  
+  /* Filters */
+  .filter-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  
+  .filter-group label {
+    font-weight: bold;
+  }
+  
+  .clear-filters-button {
+    margin-top: 10px;
+  }
+  
+  /* Media Queries */
+  
+  /* Small devices (phones, <576px) */
+  @media (max-width: 575.98px) {
+    .chart-container {
+      flex-direction: column;
+    }
+  
+    table {
+      font-size: 12px;
+    }
+  
+    th, td {
+      padding: 5px;
+    }
+  
+    .filter-group {
+      flex-direction: column;
+    }
+  
+    .clear-filters-button {
+      width: 100%;
+    }
+  }
+  
+  /* Medium devices (tablets, <768px) */
+  @media (max-width: 767.98px) {
+    .chart-container {
+      flex-direction: column;
+    }
+  
+    .filter-group {
+      flex-direction: column;
+    }
+  }
+  
+  /* Large devices (desktops, <992px) */
+  @media (max-width: 991.98px) {
+    .chart-container {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  
+    .filter-group {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+  
